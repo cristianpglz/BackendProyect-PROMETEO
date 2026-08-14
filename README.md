@@ -1,10 +1,10 @@
-# 🎬 Backend PROMETEO - API REST de Animes
+# Backend PROMETEO - API REST de Animes
 
-API RESTful desarrollada con Node.js, Express y MongoDB para la gestión de un catálogo de animes y favoritos de usuarios. Incluye autenticación mediante JWT (JSON Web Tokens) y control de acceso basado en roles (`user` y `admin`).
+API REST desarrollada con Node.js, Express y MongoDB para la gestión de un catálogo de animes y favoritos de usuarios. Incluye autenticación mediante JWT (JSON Web Tokens) y control de acceso basado en roles (`user` y `admin`).
 
 ---
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 * **Entorno / Framework:** Node.js + Express.js
 * **Base de datos:** MongoDB + Mongoose
@@ -14,7 +14,7 @@ API RESTful desarrollada con Node.js, Express y MongoDB para la gestión de un c
 
 ---
 
-## 🚀 Instalación y Despliegue Local
+## Instalación y Despliegue Local
 
 1. **Clonar el repositorio e instalar dependencias:**
    ```bash
@@ -40,7 +40,7 @@ API RESTful desarrollada con Node.js, Express y MongoDB para la gestión de un c
 
 ---
 
-## 📌 Endpoints de la API
+## Endpoints de la API
 
 | Método | Ruta | Acceso | Descripción |
 | :--- | :--- | :--- | :--- |
@@ -57,7 +57,7 @@ API RESTful desarrollada con Node.js, Express y MongoDB para la gestión de un c
 
 ---
 
-## 📸 Evidencias y Pruebas de Funcionamiento (Insomnia)
+## Evidencias y Pruebas de Funcionamiento (Insomnia)
 
 ### 1. Consultas al Catálogo (`GET`)
 
