@@ -48,4 +48,26 @@ export const getProfile = async (req, res, next) => {
 
 // Eliminar anime de favoritos
 
-export const removeFavorite = async 
+export const removeFavorite = async (req, res, next) => {
+    try {
+        const { animeId } = req.params;
+        const userId = req.user.id;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $pull: { favoriteAnimes: animeId } },
+            { new: true}
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "Usuario no encontrado"});
+        }
+        
+        return res.status(200).json({ 
+            message: "Anime eliminado de favoritos",
+            favoriteAnimes: updatedUser.favoriteAnimes
+        });
+    }catch (error) {
+        return next (error);
+    }
+}
