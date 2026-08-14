@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken"; // generar y verificar tokens de autenticacion
 
-import User from "../models/User.js";
+import User from "../models/User.js"; // Importamos el modelo del usuario
 
 // Middeleware para verificar si el usuario inicio sesion
 export const isAuth = async (req, res, next) => {
@@ -10,6 +10,7 @@ export const isAuth = async (req, res, next) => {
         if (!authHeader || !authHeader.startsWith("Bearer ")){
             return res.status(401).json({ message: "No estas autorizado. Falta el token "})
         }
+        // Eliminamos el inicio "bearer "
         const token = authHeader.split(" ")[1];
 
         // 2. Verificar y descodificar el token

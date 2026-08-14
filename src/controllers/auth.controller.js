@@ -1,7 +1,9 @@
-import User from "../models/User.js";
-import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken';
+import User from "../models/User.js"; // Importamos el modelo del usuario
+import bcrypt from "bcrypt"; // bcypt para encriptar la contraseña
+import jwt from 'jsonwebtoken'; // jsonwebtoken para generar el token de autenticación
 
+
+// Registrar el nuevo usuario
 export const register = async (req, res) => {
     try {
         const {username, email, password, image } = req.body;
@@ -51,15 +53,16 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
 
         // 1. Buscar al usuario por su email en la base de datos
+        // Si no se encuentra devolvemos un error
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: "Credenciales incorrectas (Email no encontrado)" });
+            return res.status(400).json({ message: "Credenciales incorrectas" });
         }
 
         // 2. Comparar la contraseña introducida con la encriptada
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Credenciales incorrectas (Contraseña falsa)" });
+            return res.status(400).json({ message: "Credenciales incorrectas" });
         }
 
         // 3. Si todo es correcto, generar el Token JWT con el ID del usuario

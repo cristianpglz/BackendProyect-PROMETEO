@@ -1,5 +1,6 @@
-import express from "express";
+import express from "express"; // Importamos express para crear las rutas
 
+// Importamos los controladores de anime
 import {
     getAllAnimes,
     getAnimeById,
@@ -8,7 +9,6 @@ import {
     deleteAnime
 } from "../controllers/anime.controller.js";
 import { isAuth, isAdmin } from  "../middlewares/auth.middleware.js";
-
 
 const router = express.Router();
 

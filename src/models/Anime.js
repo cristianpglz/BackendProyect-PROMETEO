@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Definimos el esquema del anime
 const animeSchema = new mongoose.Schema({
     title: { type: String, required: true, unique: true },
     studio: { type: String, required: true },
@@ -10,5 +11,5 @@ const animeSchema = new mongoose.Schema({
 }, {
     timestamps: true // Crea automaticamente campos de fecha de creacion y actualizacion
 });
-
+// Exportamos el modelo del anime
 export default mongoose.models.Anime || mongoose.model("Anime", animeSchema);

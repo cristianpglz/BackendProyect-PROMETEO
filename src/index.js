@@ -1,9 +1,10 @@
-// Cargar las variables de entorno desde el archivo .env
+// Archivo principal de la aplicacion
+// Importamos dependencias necesarias
 import "dotenv/config";
 
 import express from "express";
 
-import cors from "cors";
+import cors from "cors"; // Importamos cors para permitir peticiones desde otros dominios
 
 import connectDB from "./config/db.js";
 

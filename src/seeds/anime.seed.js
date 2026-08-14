@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 
 import "dotenv/config";
 
-import Anime from "../models/Anime.js";
+import Anime from "../models/Anime.js"; // Importamos el modelo del anime
 
+// Definimos un array con los animes iniciales que queremos insertar en la base de datos
 const animesIniciales = [
     {
         title: "Naruto Shippuden",
@@ -60,6 +61,7 @@ const animesIniciales = [
     }
 ];
 
+// Funcion para sembrar la base de datos con los animes iniciales
 const seedDatabase = async () => {
     try {
         // 1. Conectamos a la base de datos temporalmente

@@ -1,5 +1,5 @@
 import express from "express";
-import { addFavorite, getProfile, removeFavorite }from "../controllers/user.controller.js";
+import { addFavorite, getProfile, removeFavorite }from "../controllers/user.controller.js"; // Importamos los controladores de actualizacion de usuarios
 import { isAuth } from "../middlewares/auth.middleware.js";
 
 const userRoutes = express.Router();
