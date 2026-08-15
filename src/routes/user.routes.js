@@ -1,15 +1,28 @@
 import express from "express";
-import { addFavorite, getProfile, removeFavorite }from "../controllers/user.controller.js"; // Importamos los controladores de actualizacion de usuarios
-import { isAuth } from "../middlewares/auth.middleware.js";
+import { registerUser, 
+    deleteUser, 
+    updateUserRole, 
+    addFavorite, 
+    getProfile, 
+    removeFavorite,
+    updateUserAvatar }from "../controllers/user.controller.js"; // Importamos los controladores de actualizacion de usuarios
+import { isAuth, isAdmin } from '../middlewares/auth.middleware.js';
+import { upload } from "../middlewares/images.middleware.js";
+
 
 const userRoutes = express.Router();
+// Registro: Usamos upload.single("image") para interceptar la foto antes del controlador
+userRoutes.post("/register", upload.single("image"), registerUser);
 
-// Obtener el perfil del usuario autenticado (con animes favoritos cargados)
+// Perfil y Favoritos (Tus rutas anteriores)
 userRoutes.get("/profile", isAuth, getProfile);
+userRoutes.post("/favorites/:animeId", isAuth, addFavorite);
+userRoutes.delete("/favorites/:animeId", isAuth, removeFavorite);
 
-// Agregamos a favoritos
-userRoutes.put("/favorites/:animeId", isAuth, addFavorite);
+// Borrar usuario (Requiere estar logueado, la lógica interna verifica si es admin o él mismo)
+userRoutes.delete("/:id", isAuth, deleteUser);
 
-// Eliminamos de Favoritos
-userRoutes.delete("/favorites/:animeId", isAuth, removeFavorite)
+// Actualizar rol (Requiere doble validación: estar logueado y ser Admin)
+userRoutes.put("/:id/role", [isAuth, isAdmin], updateUserRole);
+userRoutes.put("/profile/avatar", isAuth, upload.single("image"), updateUserAvatar);
 export default userRoutes;

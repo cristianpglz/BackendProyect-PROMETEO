@@ -8,6 +8,7 @@ import cors from "cors"; // Importamos cors para permitir peticiones desde otros
 
 import connectDB from "./config/db.js";
 
+
 import authRoutes from "./routes/auth.routes.js";
 
 import animeRoutes from "./routes/anime.routes.js";

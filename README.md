@@ -8,6 +8,7 @@ API REST desarrollada con Node.js, Express y MongoDB para la gestión de un cat�
 
 * **Entorno / Framework:** Node.js + Express.js
 * **Base de datos:** MongoDB + Mongoose
+* **Almacenamiento de imágenes:** Cloudinary + Multer
 * **Seguridad / Auth:** JWT (JSON Web Tokens) + Bcrypt
 * **Gestor de paquetes:** PNPM
 * **Pruebas de API:** Insomnia
@@ -25,14 +26,18 @@ API REST desarrollada con Node.js, Express y MongoDB para la gestión de un cat�
 
 2. **Configurar variables de entorno:**
    Crea un archivo `.env` en la raíz (basándote en `.env.example`):
-   ```env
+   ```
+   env
    PORT=3000
    MONGO_URI=tu_cadena_de_conexion_mongodb
    JWT_SECRET=tu_clave_secreta_jwt
+   CLOUDINARY_CLOUD_NAME=tu_cloud_name
+   CLOUDINARY_API_KEY=tu_api_key
+   CLOUDINARY_API_SECRET=tu_api_secret
    ```
 
 3. **Cargar datos iniciales (Seeder) e iniciar el servidor:**
-   ```bash
+   ```bash   
    pnpm seed
    pnpm dev
    ```
@@ -46,6 +51,7 @@ API REST desarrollada con Node.js, Express y MongoDB para la gestión de un cat�
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/v1/users/register` | Público | Registro de usuario (`role: "user"` por defecto) |
 | `POST` | `/api/v1/users/login` | Público | Login de usuario y obtención del Token JWT |
+| `POST` | `/api/v1/users/register` | Público | Registro de usuario con subida de imagen inicial |
 | `GET` | `/api/v1/users/profile` | Auth (`isAuth`) | Perfil de usuario con animes favoritos populados |
 | `POST` | `/api/v1/users/favorites/:animeId` | Auth (`isAuth`) | Añadir un anime a la lista de favoritos |
 | `DELETE` | `/api/v1/users/favorites/:animeId` | Auth (`isAuth`) | Eliminar un anime de la lista de favoritos |
@@ -102,3 +108,11 @@ API REST desarrollada con Node.js, Express y MongoDB para la gestión de un cat�
 
 * **Consulta tras eliminación (`404 Not Found`):**
   ![Comprobación 404](imgs/image10.png)
+
+### 5. Registro y Subida de Imágenes (Cloudinary)
+
+* **Subida de imagen correcta (`200 OK` / `201 Created`):**
+  ![Subida de Imagen](imgs/image11.png)
+  ![Subida de Imagen](imgs/image12.png)
+
+---
