@@ -2,36 +2,6 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 
-// Registrar un nuevo usuario subiendo su imagen
-export const registerUser = async (req, res, next) => {
-    try {
-        const { username, email, password } = req.body;
-
-        // Comprobamos si se ha subido un archivo de imagen mediante Multer
-        if (!req.file) {
-            return res.status(400).json({ message: "La imagen es obligatoria" });
-        }
-
-        // Encriptamos la contraseña del usuario por seguridad
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Creamos el objeto del nuevo usuario incluyendo la URL de la imagen en Cloudinary
-        const newUser = new User({
-            username,
-            email,
-            password: hashedPassword,
-            role: "user", // Rol por defecto
-            image: req.file.path
-        });
-
-        // Guardamos el usuario en la base de datos
-        const savedUser = await newUser.save();
-        return res.status(201).json(savedUser);
-    } catch (error) {
-        return next(error);
-    }
-};
-
 // Eliminar un usuario y su imagen asociada en Cloudinary
 export const deleteUser = async (req, res, next) => {
     try {
@@ -52,12 +22,21 @@ export const deleteUser = async (req, res, next) => {
 
         // Si el usuario tiene una imagen, la borramos de los servidores de Cloudinary
         if (userToDelete.image) {
-            const folderName = "prometeo_users";
-            const fileParts = userToDelete.image.split("/");
-            const fileName = fileParts[fileParts.length - 1].split(".")[0];
-            const publicId = `${folderName}/${fileName}`;
-            
-            await cloudinary.uploader.destroy(publicId);
+            const parts = userToDelete.image.split("/");
+            const uploadIndex = parts.indexOf("upload");
+
+            if (uploadIndex !== -1) {
+                let publicIdParts = parts.slice(uploadIndex + 1);
+
+                if (publicIdParts[0] && /^v\d+$/.test(publicIdParts[0])) {
+                    publicIdParts.shift();
+                }
+
+                const publicIdWithExt = publicIdParts.join("/");
+                const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf("."));
+
+                await cloudinary.uploader.destroy(publicId);
+            }
         }
 
         // Eliminamos el registro del usuario de la base de datos de Mongo
@@ -196,12 +175,21 @@ export const updateUserAvatar = async (req, res, next) => {
 
         // Controlamos si la imagen anterior existe y se elimina de cloudinary
         if (user.image) {
-            const folderName = "prometeo_users";
-            const fileParts = user.image.split("/");
-            const fileName = fileParts[fileParts.length - 1].split(".")[0];
-            const publicId = `${folderName}/${fileName}`;
+            const parts = user.image.split("/");
+            const uploadIndex = parts.indexOf("upload");
 
-            await cloudinary.uploader.destroy(publicId);
+            if (uploadIndex !== -1) {
+                let publicIdParts = parts.slice(uploadIndex + 1);
+
+                if (publicIdParts[0] && /^v\d+$/.test(publicIdParts[0])) {
+                    publicIdParts.shift();
+                }
+
+                const publicIdWithExt = publicIdParts.join("/");
+                const publicId = publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf("."));
+
+                await cloudinary.uploader.destroy(publicId);
+            }
         }
 
         // Actualizamos la URL de la nueva imagen
@@ -219,3 +207,4 @@ export const updateUserAvatar = async (req, res, next) => {
         return next(error);
     }
 };
+

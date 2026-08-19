@@ -1,10 +1,10 @@
 import express from "express";
-import { register, login } from "../controllers/auth.controller.js"; // Importamos los controladores de actualizacion de usuarios
-
+import { register, login } from "../controllers/auth.controller.js";
+import upload from "../config/cloudinary.js"; // Importamos la configuración de Cloudinary
 const router = express.Router();
 
-// Ruta para registrar un nuevo usuario
-router.post("/register", register);
+router.post("/register", upload.single("image"), register);
+
 
 // Ruta para iniciar sesión y obtener el token
 router.post("/login", login);

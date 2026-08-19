@@ -47,14 +47,16 @@ API REST desarrollada con Node.js, Express y MongoDB para la gestión de un cat�
 
 ## Endpoints de la API
 
-| Método | Ruta | Acceso | Descripción |
+| Método | Endpoint | Permisos | Descripción |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/v1/users/register` | Público | Registro de usuario (`role: "user"` por defecto) |
-| `POST` | `/api/v1/users/login` | Público | Login de usuario y obtención del Token JWT |
-| `POST` | `/api/v1/users/register` | Público | Registro de usuario con subida de imagen inicial |
-| `GET` | `/api/v1/users/profile` | Auth (`isAuth`) | Perfil de usuario con animes favoritos populados |
+| `POST` | `/api/v1/auth/register` | Público | Registro de usuario con imagen de perfil (`role: "user"`) |
+| `POST` | `/api/v1/auth/login` | Público | Iniciar sesión y obtener token JWT |
+| `GET` | `/api/v1/users/profile` | Auth (`isAuth`) | Perfil del usuario con animes favoritos populados |
+| `PUT` | `/api/v1/users/profile/avatar` | Auth (`isAuth`) | Actualizar la foto de perfil en Cloudinary |
 | `POST` | `/api/v1/users/favorites/:animeId` | Auth (`isAuth`) | Añadir un anime a la lista de favoritos |
 | `DELETE` | `/api/v1/users/favorites/:animeId` | Auth (`isAuth`) | Eliminar un anime de la lista de favoritos |
+| `PUT` | `/api/v1/users/:id/role` | Admin (`isAdmin`) | Cambiar el rol de un usuario |
+| `DELETE` | `/api/v1/users/:id` | Auth (`isAuth`) / Admin | Eliminar propia cuenta o cualquier usuario si es admin |
 | `GET` | `/api/v1/animes` | Público | Obtener el catálogo completo de animes |
 | `GET` | `/api/v1/animes/:id` | Público | Consultar un anime por su ID |
 | `POST` | `/api/v1/animes` | Admin (`isAdmin`) | Crear un nuevo anime |
@@ -97,7 +99,7 @@ API REST desarrollada con Node.js, Express y MongoDB para la gestión de un cat�
   ![DELETE Sin Token](imgs/image7.png)
 
 * **`DELETE /api/v1/animes/:id` con Usuario Estándar (`403 Forbidden`):**
-  ![DELETE Usuario Normal](imgs/image8.png)
+  ![DELETE anime (user mode)](imgs/image8.png)
 
 * **`DELETE /api/v1/animes/:id` con Admin (`200 OK`):**
   ![DELETE Admin](imgs/image9.png)
@@ -111,8 +113,25 @@ API REST desarrollada con Node.js, Express y MongoDB para la gestión de un cat�
 
 ### 5. Registro y Subida de Imágenes (Cloudinary)
 
-* **Subida de imagen correcta (`200 OK` / `201 Created`):**
-  ![Subida de Imagen](imgs/image11.png)
-  ![Subida de Imagen](imgs/image12.png)
+* **`/api/v1/users/register` (`200 OK` / `201 Created`):**
+  ![POST user](imgs/image11.png)
+  ![POST image](imgs/image12.png)
 
+
+### 6. Eliminar usuarios (Siendo User)
+
+* **`/api/v1/users/ID` como usuario a otro usuario(`403 Forbidden`):**
+  ![DELETE user](imgs/image13.png)
+
+### 7. Eliminar usuarios (Siendo Admin)
+
+* **`/api/v1/users/ID` como admin (`200 OK`):**
+  ![DELETE user (admin mode)](imgs/image14.png)
+
+### 8. Eliminar cuenta propia
+
+* **`/api/v1/users/profile` como usuario (`200 OK`):**
+  ![DELETE profile](imgs/image15.png)
+
+---
 ---

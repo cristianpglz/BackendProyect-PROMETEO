@@ -14,10 +14,16 @@ import authRoutes from "./routes/auth.routes.js";
 import animeRoutes from "./routes/anime.routes.js";
 
 import userRoutes from "./routes/user.routes.js";
+
+import { seedDatabase } from "./seeds/anime.seed.js"; // Importamos la función para poblar la base de datos
+
 // Conectar a la base de datos
 connectDB();
 
+// Poblar la base de datos con datos iniciales
+seedDatabase();
 
+// Poblar la base de datos con datos iniciales
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -34,7 +40,7 @@ app.use("/api/v1/users", userRoutes);
 
 // Ruta para comprobar que responde el servidor
 app.get(`/api/v1/health`, (req, res) => {
-    res.status(200).json({ status: `OK`, message : `El servidor esta funcionando correctamente`})
+    res.status(200).json({ status: "OK", message : "El servidor esta funcionando correctamente" })
 })
 
 // Rutas no encontradas

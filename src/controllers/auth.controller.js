@@ -1,80 +1,76 @@
 import User from "../models/User.js"; // Importamos el modelo del usuario
 import bcrypt from "bcrypt"; // bcypt para encriptar la contraseña
 import jwt from 'jsonwebtoken'; // jsonwebtoken para generar el token de autenticación
+import { v2 as cloudinary } from "cloudinary";
 
+export const register = async (req, res, next) => {
+  try {
+    const { username, email, password } = req.body;
 
-// Registrar el nuevo usuario
-export const register = async (req, res) => {
-    try {
-        const {username, email, password, image } = req.body;
-
-        //1. validamos si el usuario o el email ya existen en la base de datos
-        const userExists = await User.findOne({ $or: [{email}, {username}]})
-        if (userExists) {
-            return res.status(400).json({message: "El nombre de usuario o el email no son correctos"})
-        }
-
-        //2. Encriptar la contraseña
-        //El numero 10 indica la complejidad de la encriptacion
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        //3. Creamos el nuevo usuario
-        // Forzamos a que el nuevo usuario siempre sea "user" al registrarse
-        const newUser = new User({
-            username,
-            email,
-            password: hashedPassword,
-            image: image || "https://via.placeholder.com/150",
-            role: "user"
-        });
-
-        //4. Guardamos en la base de datos
-        await newUser.save();
-
-        //5. Responder al cliente
-        return res.status(201).json({
-            message: "Usuario registrado con exito",
-            user: {
-                id: newUser._id,
-                username: newUser.username,
-                email: newUser.email,
-                image: newUser.image,
-                role: newUser.role
-            }
-        })
-    } catch (error) {
-        return res.status(500).json({ message: "Error en el servidor al registrar el nuevo usuario", error: error.message});
+    // Validar existencia del usuario
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Usuario ya existente" });
     }
-}
 
-// Controlador para iniciar sesión (Login)
-export const login = async (req, res) => {
+    // Cifrar la contraseña antes de guardarla en la base de datos
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Extraer la URL de la imagen subida a Cloudinary desde req.file.path
+    const imageUrl = req.file ? req.file.path : null;
+
+    // Create user document
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      image: imageUrl,
+      role: "user"
+    });
+
+    await newUser.save();
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+        image: newUser.image,
+        role: newUser.role
+      }
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+// Iniciar sesión y devolver el token JWT
+export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        // 1. Buscar al usuario por su email en la base de datos
-        // Si no se encuentra devolvemos un error
+        // 1. Buscar el usuario por su email
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: "Credenciales incorrectas" });
         }
 
-        // 2. Comparar la contraseña introducida con la encriptada
+        // 2. Comparar contraseñas
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: "Credenciales incorrectas" });
         }
 
-        // 3. Si todo es correcto, generar el Token JWT con el ID del usuario
+        // 3. Generar el token JWT
         const token = jwt.sign(
-            { id: user._index || user._id, role: user.role }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' } // El token caducará en un día
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "24h" }
         );
 
-        // 4. Devolver los datos del usuario y el token generado
         return res.status(200).json({
-            message: 'Login realizado con éxito',
+            message: "Login realizado con éxito",
             token,
             user: {
                 id: user._id,
@@ -82,8 +78,7 @@ export const login = async (req, res) => {
                 role: user.role
             }
         });
-
     } catch (error) {
-        return res.status(500).json({ message: 'Error en el login', error: error.message });
+        return next(error);
     }
 };

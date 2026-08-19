@@ -23,3 +23,4 @@ const storage = new CloudinaryStorage({
 
 // Exportamos el multer configurado para subir archivos a Cloudinary
 export const upload = multer({ storage });
+export default upload;

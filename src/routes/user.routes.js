@@ -1,6 +1,5 @@
 import express from "express";
-import { registerUser, 
-    deleteUser, 
+import {deleteUser, 
     updateUserRole, 
     addFavorite, 
     getProfile, 
@@ -11,8 +10,6 @@ import { upload } from "../middlewares/images.middleware.js";
 
 
 const userRoutes = express.Router();
-// Registro: Usamos upload.single("image") para interceptar la foto antes del controlador
-userRoutes.post("/register", upload.single("image"), registerUser);
 
 // Perfil y Favoritos (Tus rutas anteriores)
 userRoutes.get("/profile", isAuth, getProfile);
